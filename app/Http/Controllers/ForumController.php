@@ -77,14 +77,20 @@ class ForumController extends Controller
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
             'kategori' => 'required|integer',
-            'gambar' => 'image',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
+
+        $gambarPath = null;
+
+        if ($request->hasFile('gambar')) {
+            $gambarPath = $request->file('gambar')->store('gambar', 'public');
+        }
 
         Pertanyaan::create([
             'judul' => $request->judul,
             'isi' => $request->isi,
             'kategori_id' => $request->kategori,
-            'gambar' => $request->gambar,
+            'gambar' => $gambarPath,
             'user_id' => Auth::id(),
         ]);
 

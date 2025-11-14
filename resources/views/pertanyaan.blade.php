@@ -80,7 +80,7 @@
                     </div>
                     <!-- Modal body -->
                     <div class="p-4 md:p-5 space-y-4">
-                        <form action="{{ route('update.pertanyaan', $pertanyaan->id) }}" method="POST">
+                        <form action="{{ route('update.pertanyaan', $pertanyaan->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="mb-4">
@@ -92,8 +92,46 @@
                                 <textarea id="isi" name="isi" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Jelaskan pertanyaan Anda secara detail">{{ $pertanyaan->isi }}</textarea>
                             </div>
                             <div class="mb-4">
+                                <label for="dropzone-file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload Gambar</label>
+                                <div
+                                    x-data="{
+                                    imageUrl: '{{ $pertanyaan->gambar ? asset('storage/' . $pertanyaan->gambar) : '' }}',
+                                    previewImage(event) {
+                                        const file = event.target.files[0];
+                                        if (!file) return;
+                                        this.imageUrl = URL.createObjectURL(file);
+                                    },
+                                    chooseNew() {
+                                        $refs.fileInput.click();
+                                    }
+                                }"
+                                    class="flex items-center justify-center w-full">
+                                    <label for="dropzone-file" x-show="!imageUrl" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                            </svg>
+                                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                        </div>
+                                        <input id="dropzone-file" type="file" name="gambar" class="hidden" @change="previewImage" x-ref="fileInput" />
+                                    </label>
+                                    <div
+                                        class="w-full h-64 rounded-lg overflow-hidden relative cursor-pointer"
+                                        x-show="imageUrl"
+                                        @click="chooseNew">
+                                        <img :src="imageUrl" class="w-full h-full object-contain" alt="Preview">
+
+                                        <!-- Optional overlay text -->
+                                        <div class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                                            Klik untuk ganti gambar
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
                                 <label for="kategori" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
-                                <select id="kategori" name="kategori" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <select id="kategori{{  $pertanyaan->id }}" name="kategori" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     <option value="" disabled>Pilih Kategori</option>
                                     @foreach ($kategoris as $kategori)
                                     <option value="{{ $kategori->id }}" {{ $pertanyaan->kategori_id === $kategori->id ? 'selected' : '' }}>{{ $kategori->kategori }}</option>
@@ -112,8 +150,11 @@
         </div>
 
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $pertanyaan->judul }}</h5>
-        <p class="mb-2 font-normal text-gray-700 dark:text-white/80">{{ $pertanyaan->isi }}</p>
-        <p class="mb-3 w-fit bg-gray-100 text-gray-700 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-white">{{ $pertanyaan->kategori->kategori }}</p>
+        <p class="font-normal text-gray-700 dark:text-white/80">{!! $pertanyaan->isi !!}</p>
+        @if ($pertanyaan->gambar)
+        <img src="{{ asset('storage/' . $pertanyaan->gambar) }}" alt="gambar" class="mt-2 w-full h-60 object-contain">
+        @endif
+        <p class="my-3 w-fit bg-gray-100 text-gray-700 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-white">{{ $pertanyaan->kategori->kategori }}</p>
         <div class="inline-flex items-center">
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6l3 3v-3h2V9h-2M4 4h11v8H9l-3 3v-3H4V4Z" />
