@@ -241,6 +241,15 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.tiny.cloud/1/zi1cn2ua23tfhzc0lj8irpq57eenu29lev9gt9hmmp2b9nme/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#isi',
+        plugins: 'lists link image code',
+        toolbar: 'bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | link image | code',
+        menubar: false,
+    });
+</script>
 <script>
     $('#kategori').select2({
         theme: 'tailwindcss-3',
