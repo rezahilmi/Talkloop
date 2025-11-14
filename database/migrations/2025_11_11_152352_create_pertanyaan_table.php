@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pertanyaan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('kategori_id')->constrained('kategori')->cascadeOnDelete();
+            $table->foreignId('kategori_id')->references('id')->constrained('kategori')->cascadeOnDelete();
             $table->string('judul');
             $table->longText('isi');
             $table->string('gambar')->nullable();
