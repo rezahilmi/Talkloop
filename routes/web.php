@@ -4,20 +4,28 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\UserController;
 use Faker\Guesser\Name;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Home');
 });
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
-    Route::get('/login', [UserController::class, 'showLogin'])->name('show.login');
-    Route::post('/login', [UserController::class, 'login'])->name('login');
-    Route::get('/register', [UserController::class, 'showRegister'])->name('show.register');
-    Route::post('/register', [UserController::class, 'register'])->name('register');
+    Route::inertia('/login', 'Auth/Login')->name('login');
+    // Route::get('/login', [UserController::class, 'showLogin'])->name('show.login');
+    Route::post('/login', [UserController::class, 'login'])->name('post.login');
+    Route::inertia('/register', 'Auth/Register')->name('register');
+    // Route::get('/register', [UserController::class, 'showRegister'])->name('show.register');
+    Route::post('/register', [UserController::class, 'register'])->name('post.register');
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::inertia('/home', 'Home')->name('home');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     Route::get('/profil', [UserController::class, 'showProfil'])->name('profil');
     Route::put('/profil', [UserController::class, 'updateProfil'])->name('update.profil');

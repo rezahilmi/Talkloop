@@ -1,7 +1,24 @@
-// import './bootstrap';
-import 'flowbite';
-import './style.css';
-import 'flowbite/dist/flowbite.js';
-import './sidebar';
-import './dark-mode';
+// import './bootstrap'
+import 'flowbite'
+import '../css/app.css'
+// import './style.css'
+import 'flowbite/dist/flowbite.js'
+import './sidebar'
+// import './dark-mode'
+import { createApp, h } from 'vue'
+import { ZiggyVue } from '../../vendor/tightenco/ziggy'
+import { createInertiaApp } from '@inertiajs/vue3'
+
+createInertiaApp({
+  resolve: name => {
+    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+    return pages[`./Pages/${name}.vue`]
+  },
+  setup({ el, App, props, plugin }) {
+    createApp({ render: () => h(App, props) })
+      .use(plugin)
+      .use(ZiggyVue)
+      .mount(el)
+  },
+})
 // import './charts';

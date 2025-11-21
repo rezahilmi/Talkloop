@@ -9,15 +9,15 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class UserController extends Controller
 {
-    public function showLogin()
-    {
-        return view('auth.login');
-    }
+    // public function showLogin()
+    // {
+    //     return view('auth.login');
+    // }
 
-    public function showRegister()
-    {
-        return view('auth.register');
-    }
+    // public function showRegister()
+    // {
+    //     return view('auth.register');
+    // }
 
     public function login(Request $request): RedirectResponse
     {
@@ -42,8 +42,7 @@ class UserController extends Controller
         $request->validate([
             'nama' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'confirm-password' => 'required|same:password',
+            'password' => 'required|min:8|confirmed',
             'bio' => 'required|string',
             'umur' => 'required|numeric',
             'alamat' => 'required|string',
@@ -99,7 +98,7 @@ class UserController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('show.login');
+        return redirect()->route('login');
     }
 
     public function forum()
